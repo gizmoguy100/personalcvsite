@@ -166,7 +166,8 @@
   background: #e4ead4;
 }
 
-.pane-list a[aria-current="page"] {
+.pane-list a[aria-current="page"],
+.pane-list a[aria-current="true"] {
   font-weight: 700;
   text-decoration: none;
   background: #dde5c9;
@@ -219,6 +220,107 @@
   margin-bottom: 12px;
 }
 
+/* ---------- Code (project write-ups) ---------- */
+.prose code {
+  padding: 0 3px;
+  font-family: Consolas, "Lucida Console", "DejaVu Sans Mono", monospace;
+  font-size: 0.92em;
+  color: var(--text);
+  background: #f4f2e6;
+  border: 1px solid #d8d4c4;
+  border-radius: 2px;
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  max-width: 100%;
+  margin: 0 0 14px;
+  padding: 9px 11px;
+  overflow-x: auto;
+  font-family: Consolas, "Lucida Console", "DejaVu Sans Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid #bdb8a4;
+  border-left: 3px solid var(--frame);
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 0 #fff;
+  tab-size: 4;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prose pre code {
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
+  overflow-wrap: normal;
+  background: none;
+  border: 0;
+}
+
+.prose blockquote {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  background: #fdf6dc;
+  border: 1px solid #c9a94f;
+  border-left: 4px solid #8a7434;
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 0 #fff;
+}
+
+.prose blockquote p {
+  margin-bottom: 8px;
+}
+
+.prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.prose blockquote strong {
+  color: #3b2f10;
+}
+
+/* ---------- Project list ---------- */
+.project-list {
+  margin-top: 18px;
+}
+
+.project-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.project-title .icon {
+  flex: none;
+}
+
+.project-summary {
+  max-width: 64ch;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cell-meta .project-status {
+  display: inline-block;
+}
+
+.project-status {
+  display: inline-block;
+  margin-bottom: 2px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #2f4a22;
+  background: #e4ead4;
+  border: 1px solid #b7c49a;
+  border-radius: 2px;
+}
+
 /* ---------- Group box ("fieldset" look) ---------- */
 .group {
   position: relative;
@@ -246,7 +348,8 @@
 /* ---------- Tiles (XP list of large icons) ---------- */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  clear: both;
+  grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
   gap: 4px;
   margin: 14px 0 20px;
   padding: 0;
@@ -255,6 +358,7 @@
 
 .tile {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
@@ -265,6 +369,10 @@
   font-weight: 700;
   text-decoration: none;
   transition: background-color 0.1s linear;
+}
+
+.tile span {
+  overflow-wrap: anywhere;
 }
 
 .tile .icon {

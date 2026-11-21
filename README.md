@@ -1,7 +1,7 @@
 # personalcvsite
 
-A personal CV site for Alex Ferriroli, styled after the Windows XP "Luna" Olive Green
-theme. Built with Hugo, with a theme written from scratch in `layouts/` and `assets/`.
+A personal CV and project notebook for Alex Ferriroli, styled after the Windows XP
+"Luna" Olive Green theme. Built with Hugo, with a theme written from scratch in `layouts/` and `assets/`.
 
 There is no JavaScript, no web font, and no framework. Pages are ordinary documents
 inside a single XP window frame.
@@ -28,8 +28,8 @@ hugo --gc --minify
 ## Structure
 
 ```
-content/            Home, CV, About
-layouts/            baseof, home, page, cv, 404 + partials
+content/            Home, CV, About, Projects
+layouts/            baseof, home, page, cv, projects, project, 404 + partials
 assets/css/         tokens.css → chrome.css → pages.css (concatenated)
 assets/img/         headshot.jpg (source for Hugo image processing)
 static/             favicon.svg, og.png, robots.txt
@@ -46,6 +46,15 @@ scripts/make-og.py  regenerates static/og.png
   Interests come from `params.interests` in `hugo.yaml`.
 - **About** — `content/about.md`, plus the "System Properties" box in
   `layouts/page.html`.
+- **Projects** — the section landing page is `content/projects/_index.md`
+  (`layout: projects`). Add each project as `content/projects/<slug>.md` with
+  `layout: project`; the cards and Properties box read `title`, `description`,
+  `icon`, `status`, `stage`, `hardware`, `hardware_detail`, `firmware`,
+  `recovery` and `date` from front matter. Write the body as normal Markdown.
+  Order entries with `weight` (lowest first). The list and detail layouts are
+  `layouts/projects.html` and `layouts/project.html`.
+- **Code in write-ups** — fenced code blocks are not syntax-highlighted; they
+  render as scrollable `<pre>` panels styled in `assets/css/chrome.css`.
 - **Shared details** — name, role, email, location and GitHub live in `hugo.yaml`
   under `params` and are reused in the task pane, status bar, About and metadata.
 - **Headshot** — replace `assets/img/headshot.jpg`; Hugo generates the WebP variants

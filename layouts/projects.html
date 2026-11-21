@@ -1,0 +1,37 @@
+{{ define "main" }}
+<article class="projects">
+  <h1>{{ .Title }}</h1>
+  <div class="prose">
+    {{ .Content }}
+  </div>
+
+  {{- with .Pages.ByWeight }}
+  <div class="details project-list">
+    <div class="details-head" aria-hidden="true">
+      <span>Project</span>
+      <span>Status / Hardware</span>
+    </div>
+    <ol class="details-list">
+      {{ range . }}
+      <li>
+        <div class="details-row project-row">
+          <div class="cell-main">
+            <a class="project-title" href="{{ .RelPermalink }}">
+              {{ partial "icon.html" (dict "name" (.Params.icon | default "folder") "size" 16) }}
+              <span>{{ .Title }}</span>
+            </a>
+            <p class="project-summary">{{ .Description }}</p>
+          </div>
+          <div class="cell-meta">
+            {{ with .Params.status }}<span class="project-status">{{ . }}</span>{{ end }}
+            {{ with .Params.hardware }}<span>{{ . }}</span>{{ end }}
+            {{ with .Params.stage }}<span>{{ . }}</span>{{ end }}
+          </div>
+        </div>
+      </li>
+      {{ end }}
+    </ol>
+  </div>
+  {{ end }}
+</article>
+{{ end }}

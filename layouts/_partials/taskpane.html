@@ -1,6 +1,7 @@
-{{- $cv := "/cv/" | relURL -}}
-{{- $about := "/about/" | relURL -}}
-{{- $contact := cond .IsHome "#contact" ("/#contact" | relURL) -}}
+{{- $cv := "cv/" | relURL -}}
+{{- $about := "about/" | relURL -}}
+{{- $projects := "projects/" | relURL -}}
+{{- $contact := cond .IsHome "#contact" (printf "%s#contact" site.Home.RelPermalink) -}}
 <aside class="taskpane" aria-label="Site navigation">
   <section class="pane-section">
     <p class="pane-title">Places</p>
@@ -9,6 +10,12 @@
         <a href="{{ $cv }}"{{ if eq .RelPermalink $cv }} aria-current="page"{{ end }}>
           {{ partial "icon.html" (dict "name" "cv" "size" 16) }}
           <span>CV</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ $projects }}"{{ if eq .RelPermalink $projects }} aria-current="page"{{ else if eq .Section "projects" }} aria-current="true"{{ end }}>
+          {{ partial "icon.html" (dict "name" "camera" "size" 16) }}
+          <span>Projects</span>
         </a>
       </li>
       <li>

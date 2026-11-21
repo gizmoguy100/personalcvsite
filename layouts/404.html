@@ -6,21 +6,33 @@
   <nav aria-label="Site sections">
     <ul class="tiles">
       <li>
-        <a class="tile" href="{{ "/" | relURL }}">
+        <a class="tile" href="{{ site.Home.RelPermalink }}">
           {{ partial "icon.html" (dict "name" "computer" "size" 32) }}
           <span>Home</span>
         </a>
       </li>
       <li>
-        <a class="tile" href="{{ "/cv/" | relURL }}">
+        <a class="tile" href="{{ "cv/" | relURL }}">
           {{ partial "icon.html" (dict "name" "cv" "size" 32) }}
           <span>CV</span>
         </a>
       </li>
       <li>
-        <a class="tile" href="{{ "/about/" | relURL }}">
+        <a class="tile" href="{{ "projects/" | relURL }}">
+          {{ partial "icon.html" (dict "name" "camera" "size" 32) }}
+          <span>Projects</span>
+        </a>
+      </li>
+      <li>
+        <a class="tile" href="{{ "about/" | relURL }}">
           {{ partial "icon.html" (dict "name" "about" "size" 32) }}
           <span>About</span>
+        </a>
+      </li>
+      <li>
+        <a class="tile" href="{{ printf "%s#contact" site.Home.RelPermalink }}">
+          {{ partial "icon.html" (dict "name" "contact" "size" 32) }}
+          <span>Contact</span>
         </a>
       </li>
     </ul>

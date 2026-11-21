@@ -4,13 +4,21 @@
 {{- else if eq .Kind "404" -}}
   {{- $current = "Page not found" -}}
 {{- end -}}
+{{- $section := .CurrentSection -}}
+{{- $nested := and (not .IsHome) (not $section.IsHome) (ne $section .) -}}
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <span class="breadcrumb-label">Address</span>
   <ol class="crumbs">
     <li>
       {{ partial "icon.html" (dict "name" "folder" "size" 14) }}
-      <a href="{{ "/" | relURL }}">Home</a>
+      <a href="{{ site.Home.RelPermalink }}">Home</a>
     </li>
+    {{- if $nested }}
+    <li>
+      <span class="crumb-sep" aria-hidden="true">›</span>
+      <a href="{{ $section.RelPermalink }}">{{ $section.Title }}</a>
+    </li>
+    {{- end }}
     <li>
       <span class="crumb-sep" aria-hidden="true">›</span>
       <span aria-current="page">{{ $current }}</span>

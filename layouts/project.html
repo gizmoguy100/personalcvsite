@@ -1,0 +1,56 @@
+{{ define "main" }}
+<article class="project">
+  <h1>{{ .Title }}</h1>
+  <p class="subtitle">
+    {{- with .Params.status }}{{ . }}{{ end -}}
+    {{- with .Params.hardware }} · {{ . }}{{ end -}}
+    {{- with .Params.firmware }} · {{ . }}{{ end -}}
+  </p>
+
+  <section class="group project-properties" aria-labelledby="project-properties-title">
+    <h2 id="project-properties-title">Project Properties</h2>
+    <dl class="props">
+      {{ with .Params.status }}
+      <div>
+        <dt>Status</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.stage }}
+      <div>
+        <dt>Stage</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.hardware }}
+      <div>
+        <dt>Hardware</dt>
+        <dd>{{ . }}{{ with $.Params.hardware_detail }} — {{ . }}{{ end }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.firmware }}
+      <div>
+        <dt>Firmware</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.recovery }}
+      <div>
+        <dt>Recovery</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Date }}
+      <div>
+        <dt>Write-up</dt>
+        <dd>{{ .Format "2 January 2006" }}</dd>
+      </div>
+      {{ end }}
+    </dl>
+  </section>
+
+  <div class="prose project-body">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}
