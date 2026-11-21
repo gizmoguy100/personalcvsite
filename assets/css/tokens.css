@@ -1,0 +1,169 @@
+/* ============================================================
+   Tokens — Windows XP "Luna" Olive Green, interpreted
+   All colours chosen to keep text at >= 4.5:1 on their surface.
+   ============================================================ */
+:root {
+  color-scheme: light;
+
+  /* Window face */
+  --face: #ece9d8;
+  --face-hi: #f8f6ed;
+  --face-mid: #e4e1cf;
+  --face-lo: #c9c4b1;
+  --face-line: #b9b4a1;
+
+  /* Olive frame + title bar */
+  --frame: #5c7440;
+  --frame-dark: #2f4a22;
+  --frame-hi: #9db07c;
+  --title-a: #93a872;
+  --title-mid: #5d7244;
+  --title-b: #40542a;
+
+  /* Desktop */
+  --desk-a: #c3d1ae;
+  --desk-b: #8ea172;
+  --desk-c: #5f7244;
+
+  /* Text */
+  --text: #1a1a1a;
+  --muted: #4a4a3a;
+  --link: #1f4e79;
+  --link-visited: #4b3468;
+  --link-hover: #0e2f4f;
+
+  /* States */
+  --select: #316ac5;
+  --select-text: #ffffff;
+  --hover-glow: #f0be5a;
+  --focus: #1a1a1a;
+  --field: #ffffff;
+  --field-border: #7f7a68;
+
+  --font: Tahoma, Verdana, "Segoe UI", "DejaVu Sans", sans-serif;
+  --shadow-window: 0 14px 34px rgba(22, 32, 12, 0.32), 0 3px 8px rgba(22, 32, 12, 0.22);
+  --radius-window: 9px;
+  --radius-control: 3px;
+}
+
+/* ============================================================
+   Reset + base
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 13px/1.55 var(--font);
+  color: var(--text);
+  background-color: var(--desk-b);
+  background-image:
+    radial-gradient(ellipse 140% 70% at 50% 118%, #d3ddc0 0%, rgba(211, 221, 192, 0) 62%),
+    linear-gradient(180deg, var(--desk-a) 0%, #a4b78b 42%, var(--desk-b) 78%, var(--desk-c) 100%);
+  background-attachment: fixed;
+  padding: clamp(12px, 3vw, 44px) clamp(8px, 3vw, 40px) clamp(18px, 4vw, 52px);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:visited {
+  color: var(--link-visited);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+::selection {
+  background: var(--select);
+  color: var(--select-text);
+}
+
+:focus-visible {
+  outline: 1px dotted var(--focus);
+  outline-offset: 2px;
+}
+
+/* Skip link — XP push-button styling */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 10;
+  padding: 6px 12px;
+  background: var(--face);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 1px 0 #fff;
+  color: var(--text);
+  text-decoration: none;
+  transition: top 0.12s ease-out;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

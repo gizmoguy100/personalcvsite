@@ -1,0 +1,37 @@
+<section id="{{ .id }}" aria-labelledby="{{ .id }}-title">
+  <h2 id="{{ .id }}-title">{{ .title }}</h2>
+  <div class="details">
+    <div class="details-head" aria-hidden="true">
+      <span>Role / Organisation</span>
+      <span>Dates / Location</span>
+    </div>
+    <ol class="details-list">
+      {{ range .items }}
+      {{- $item := . -}}
+      <li>
+        <div class="details-row">
+          <div class="cell-main">
+            <span class="role">{{ $item.role }}</span>
+            <span class="org">
+              {{- if $item.org_url }}<a href="{{ $item.org_url }}">{{ end -}}
+              {{- $item.org -}}
+              {{- if $item.org_url }}</a>{{ end -}}
+              {{- with $item.summary }} — {{ . }}{{ end -}}
+            </span>
+          </div>
+          <div class="cell-meta">
+            <span class="period">{{ $item.period }}</span>
+            {{ with $item.location }}<span class="location">{{ . }}</span>{{ end }}
+          </div>
+        </div>
+        {{ with $item.blurb }}<p class="blurb">{{ . }}</p>{{ end }}
+        {{ with $item.highlights }}
+        <ul class="bullets">
+          {{ range . }}<li>{{ . }}</li>{{ end }}
+        </ul>
+        {{ end }}
+      </li>
+      {{ end }}
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+{{- $title := site.Title -}}
+{{- if not .IsHome -}}
+  {{- $name := .Title -}}
+  {{- if eq .Kind "404" -}}{{- $name = "Page not found" -}}{{- end -}}
+  {{- $title = printf "%s - %s" $name site.Title -}}
+{{- end -}}
+{{- $description := .Description | default site.Params.description -}}
+{{- $ogImage := "og.png" | absURL -}}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ $title }}</title>
+  <meta name="description" content="{{ $description }}">
+  <meta name="author" content="{{ site.Params.author }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.Title }}">
+  <meta property="og:title" content="{{ $title }}">
+  <meta property="og:description" content="{{ $description }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:image" content="{{ $ogImage }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ $title }}">
+  <meta name="twitter:description" content="{{ $description }}">
+  <meta name="twitter:image" content="{{ $ogImage }}">
+
+  <meta name="theme-color" content="#5c7440">
+  {{- if ne (urls.Parse site.BaseURL).Host "ferriroli.com" }}
+  <meta name="robots" content="noindex">
+  {{- end }}
+  <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+
+  {{- $css := slice
+    (resources.Get "css/tokens.css")
+    (resources.Get "css/chrome.css")
+    (resources.Get "css/pages.css")
+    | resources.Concat "css/site.css"
+    | minify
+    | fingerprint -}}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+  {{- $headshot := resources.Get "img/headshot.jpg" -}}
+  {{- $person := dict
+    "@context" "https://schema.org"
+    "@type" "Person"
+    "name" site.Params.author
+    "jobTitle" site.Params.role
+    "email" (printf "mailto:%s" site.Params.email)
+    "url" site.BaseURL
+    "sameAs" (slice site.Params.github)
+    "description" site.Params.description
+  -}}
+  {{- with $headshot -}}{{- $person = merge $person (dict "image" .Permalink) -}}{{- end -}}
+  <script type="application/ld+json">{{ $person | jsonify | safeJS }}</script>
+</head>

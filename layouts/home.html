@@ -1,0 +1,56 @@
+{{ define "main" }}
+<article class="home">
+  <h1>{{ .Title }}</h1>
+  {{ partial "photo.html" (dict "priority" true) }}
+  <div class="prose">
+    {{ .Content }}
+  </div>
+
+  <nav aria-label="Site sections">
+    <ul class="tiles">
+      <li>
+        <a class="tile" href="{{ "/cv/" | relURL }}">
+          {{ partial "icon.html" (dict "name" "cv" "size" 32) }}
+          <span>CV</span>
+        </a>
+      </li>
+      <li>
+        <a class="tile" href="{{ "/about/" | relURL }}">
+          {{ partial "icon.html" (dict "name" "about" "size" 32) }}
+          <span>About</span>
+        </a>
+      </li>
+      <li>
+        <a class="tile" href="#contact">
+          {{ partial "icon.html" (dict "name" "contact" "size" 32) }}
+          <span>Contact</span>
+        </a>
+      </li>
+      <li>
+        <a class="tile" href="{{ site.Params.github }}" rel="me noopener">
+          {{ partial "icon.html" (dict "name" "github" "size" 32) }}
+          <span>GitHub</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <section class="group" id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title">Contact</h2>
+    <dl class="props">
+      <div>
+        <dt>Email</dt>
+        <dd><a href="mailto:{{ site.Params.email }}">{{ site.Params.email }}</a></dd>
+      </div>
+      <div>
+        <dt>GitHub</dt>
+        <dd><a href="{{ site.Params.github }}" rel="me noopener">gizmoguy100</a></dd>
+      </div>
+      <div>
+        <dt>Location</dt>
+        <dd>{{ site.Params.location }}</dd>
+      </div>
+    </dl>
+  </section>
+</article>
+{{ end }}

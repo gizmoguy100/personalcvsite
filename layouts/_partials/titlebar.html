@@ -1,0 +1,12 @@
+{{- $icon := .Params.icon | default "cv" -}}
+{{- if eq .Kind "404" -}}{{- $icon = "warning" -}}{{- end -}}
+{{- $title := .Title -}}
+{{- if .IsHome -}}
+  {{- $title = site.Title -}}
+{{- else if eq .Kind "404" -}}
+  {{- $title = "Page not found" -}}
+{{- end -}}
+<header class="titlebar">
+  {{ partial "icon.html" (dict "name" $icon "size" 16) }}
+  <span class="titlebar-text">{{ if .IsHome }}{{ site.Title }}{{ else }}{{ $title }} - {{ site.Title }}{{ end }}</span>
+</header>

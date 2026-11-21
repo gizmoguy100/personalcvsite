@@ -1,0 +1,47 @@
+{{ define "main" }}
+<article class="page">
+  <h1>{{ .Title }}</h1>
+  <div class="about-grid">
+    {{ partial "photo.html" (dict "priority" false) }}
+    <div class="about-main">
+      <div class="prose">
+        {{ .Content }}
+      </div>
+
+      <section class="group" aria-labelledby="sysprops-title">
+        <h2 id="sysprops-title">System Properties</h2>
+        <dl class="props">
+          <div>
+            <dt>Name</dt>
+            <dd>{{ site.Params.author }}</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>{{ site.Params.role }}</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ site.Params.email }}">{{ site.Params.email }}</a></dd>
+          </div>
+          <div>
+            <dt>Location</dt>
+            <dd>{{ site.Params.location }}</dd>
+          </div>
+          <div>
+            <dt>GitHub</dt>
+            <dd><a href="{{ site.Params.github }}" rel="me noopener">gizmoguy100</a></dd>
+          </div>
+          <div>
+            <dt>Interests</dt>
+            <dd>
+              {{- range $i, $interest := site.Params.interests -}}
+                {{- if $i }}, {{ end }}{{ $interest.name -}}
+              {{- end -}}
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </div>
+</article>
+{{ end }}

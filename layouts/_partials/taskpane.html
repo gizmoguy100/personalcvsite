@@ -1,0 +1,39 @@
+{{- $cv := "/cv/" | relURL -}}
+{{- $about := "/about/" | relURL -}}
+{{- $contact := cond .IsHome "#contact" ("/#contact" | relURL) -}}
+<aside class="taskpane" aria-label="Site navigation">
+  <section class="pane-section">
+    <h2 class="pane-title">Places</h2>
+    <ul class="pane-list">
+      <li>
+        <a href="{{ $cv }}"{{ if eq .RelPermalink $cv }} aria-current="page"{{ end }}>
+          {{ partial "icon.html" (dict "name" "cv" "size" 16) }}
+          <span>CV</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ $about }}"{{ if eq .RelPermalink $about }} aria-current="page"{{ end }}>
+          {{ partial "icon.html" (dict "name" "about" "size" 16) }}
+          <span>About</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ $contact }}">
+          {{ partial "icon.html" (dict "name" "contact" "size" 16) }}
+          <span>Contact</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="pane-section">
+    <h2 class="pane-title">Elsewhere</h2>
+    <ul class="pane-list">
+      <li>
+        <a href="{{ site.Params.github }}" rel="me noopener">
+          {{ partial "icon.html" (dict "name" "github" "size" 16) }}
+          <span>GitHub</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</aside>

@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{- $sections := slice
+  (dict "id" "experience" "title" "Experience" "items" .Params.experience)
+  (dict "id" "education" "title" "Education" "items" .Params.education)
+  (dict "id" "volunteering" "title" "Volunteering" "items" .Params.volunteering)
+-}}
+<article class="cv">
+  <h1>{{ .Title }}</h1>
+  <p class="subtitle">{{ site.Params.role }} · {{ site.Params.location }}</p>
+
+  {{ range $sections }}
+    {{ partial "cv-section.html" . }}
+  {{ end }}
+
+  <section id="interests" aria-labelledby="interests-title">
+    <h2 id="interests-title">Interests</h2>
+    <dl class="interests">
+      {{ range site.Params.interests }}
+      <dt>{{ .name }}</dt>
+      <dd>{{ .description }}</dd>
+      {{ end }}
+    </dl>
+  </section>
+</article>
+{{ end }}

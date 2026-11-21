@@ -1,0 +1,9 @@
+{{- if eq (urls.Parse site.BaseURL).Host "ferriroli.com" -}}
+User-agent: *
+Allow: /
+{{- else -}}
+User-agent: *
+Disallow: /
+{{- end }}
+
+Sitemap: {{ "sitemap.xml" | absURL }}

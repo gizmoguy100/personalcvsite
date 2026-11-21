@@ -1,0 +1,36 @@
+baseURL: "https://ferriroli.com/"
+locale: "en-GB"
+title: "Alex Ferriroli"
+enableRobotsTXT: true
+disableKinds: ["taxonomy", "term", "rss"]
+enableGitInfo: false
+
+params:
+  author: "Alex Ferriroli"
+  role: "Software & Systems Engineer"
+  email: "alex@ferriroli.com"
+  location: "London & South Norfolk"
+  github: "https://github.com/gizmoguy100/"
+  githubUser: "gizmoguy100"
+  description: "Alex Ferriroli — Software & Systems Engineer based in London and South Norfolk."
+  interests:
+    - name: "Amateur Radio"
+      description: "ham radio, amateur radio, electronics, radio communication"
+    - name: "Technology"
+      description: "computers, programming, gadgets, software development"
+    - name: "Electronics"
+      description: "electronics, circuit design, microcontrollers, embedded systems"
+    - name: "Motorcycles"
+      description: "motorcycles, biking, motorbike maintenance"
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: false
+  highlight:
+    codeFences: false
+
+minify:
+  tdewolff:
+    html:
+      keepQuotes: true

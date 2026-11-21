@@ -1,0 +1,19 @@
+{{- $current := .Title -}}
+{{- if .IsHome -}}
+  {{- $current = site.Title -}}
+{{- else if eq .Kind "404" -}}
+  {{- $current = "Page not found" -}}
+{{- end -}}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <span class="breadcrumb-label">Address</span>
+  <ol class="crumbs">
+    <li>
+      {{ partial "icon.html" (dict "name" "folder" "size" 14) }}
+      <a href="{{ "/" | relURL }}">Home</a>
+    </li>
+    <li>
+      <span class="crumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">{{ $current }}</span>
+    </li>
+  </ol>
+</nav>
