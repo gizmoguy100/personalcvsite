@@ -3,7 +3,7 @@
 {{- $contact := cond .IsHome "#contact" ("/#contact" | relURL) -}}
 <aside class="taskpane" aria-label="Site navigation">
   <section class="pane-section">
-    <h2 class="pane-title">Places</h2>
+    <p class="pane-title">Places</p>
     <ul class="pane-list">
       <li>
         <a href="{{ $cv }}"{{ if eq .RelPermalink $cv }} aria-current="page"{{ end }}>
@@ -26,7 +26,7 @@
     </ul>
   </section>
   <section class="pane-section">
-    <h2 class="pane-title">Elsewhere</h2>
+    <p class="pane-title">Elsewhere</p>
     <ul class="pane-list">
       <li>
         <a href="{{ site.Params.github }}" rel="me noopener">
