@@ -34,6 +34,24 @@
         <dd>{{ . }}</dd>
       </div>
       {{ end }}
+      {{ with .Params.network }}
+      <div>
+        <dt>Network</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.streaming }}
+      <div>
+        <dt>Streaming</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
+      {{ with .Params.storage }}
+      <div>
+        <dt>Storage</dt>
+        <dd>{{ . }}</dd>
+      </div>
+      {{ end }}
       {{ with .Params.recovery }}
       <div>
         <dt>Recovery</dt>

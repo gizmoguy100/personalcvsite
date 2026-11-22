@@ -253,8 +253,8 @@
 .prose pre code {
   padding: 0;
   font-size: inherit;
-  white-space: pre;
-  overflow-wrap: normal;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: none;
   border: 0;
 }

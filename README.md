@@ -50,7 +50,8 @@ scripts/make-og.py  regenerates static/og.png
   (`layout: projects`). Add each project as `content/projects/<slug>.md` with
   `layout: project`; the cards and Properties box read `title`, `description`,
   `icon`, `status`, `stage`, `hardware`, `hardware_detail`, `firmware`,
-  `recovery` and `date` from front matter. Write the body as normal Markdown.
+  `network`, `streaming`, `storage`, `recovery` and `date` from front matter.
+  Write the body as normal Markdown.
   Order entries with `weight` (lowest first). The list and detail layouts are
   `layouts/projects.html` and `layouts/project.html`.
 - **Code in write-ups** — fenced code blocks are not syntax-highlighted; they

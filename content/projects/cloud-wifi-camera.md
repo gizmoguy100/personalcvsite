@@ -2,25 +2,49 @@
 title: "Cloud WiFi Camera"
 layout: "project"
 icon: "camera"
-description: "Reverse engineering a V380E-class cloud camera and bringing up an OpenIPC kernel on it."
-status: "In progress"
-stage: "OpenIPC kernel boots; userspace next"
+description: "Turning a V380E-class cloud camera into a working local-only 720p RTSP/ONVIF camera with OpenIPC on its own flash."
+status: "Working"
+stage: "Local-only RTSP/ONVIF"
 hardware: "Anyka AK3918EN080 (V200)"
 hardware_detail: "64 MiB RAM · 8 MiB MX25L6433F NOR · SC1245 sensor"
 firmware: "OpenIPC AK3918EV200 · Linux 4.4.302"
-recovery: "Stock SD rescue retained on p1/p2"
-date: 2026-11-21
+network: "Wi-Fi · LAN only, no default route"
+streaming: "H.264 1280×720 · RTSP/ONVIF"
+storage: "NOR rootfs + jffs2 overlay"
+recovery: "Saved U-Boot SD p4/p3 boots; stock rescue on p1/p2"
+date: 2026-11-22
 weight: 10
 ---
 
 The camera is a cheap, cloud-first Wi-Fi model from the V380 family. It has no
 Ethernet socket, and its normal life is a vendor app, a vendor account and a
-cloud service. The aim of this project is to keep the hardware but replace that
-life with something local: an RTSP stream on the LAN, optionally ONVIF, and no
-dependency on the vendor cloud.
+cloud service. This project keeps the hardware and replaces that life with
+something local: an authenticated RTSP stream on the LAN, ONVIF for an NVR, and
+no dependency on the vendor cloud.
 
-The work recorded here was done on 20–21 November 2026. It is a bring-up log,
-not a finished conversion.
+It is now a working camera rather than a bring-up experiment. OpenIPC boots
+unattended from the camera's own NOR flash, joins the LAN over Wi-Fi, and serves
+720p H.264. The work recorded here was done on 20–22 November 2026.
+
+## What works
+
+Verified against the live camera on 22 November 2026:
+
+- **Boot:** OpenIPC 4.4.302 boots from NOR in about 17 seconds, with a
+  persistent jffs2 overlay. Settings survive a reboot.
+- **Network:** the RTL8188FU Wi-Fi adapter associates and gets a DHCP lease.
+  The configuration is LAN-only, with no IPv4 default route and IPv6 disabled
+  (the route/IPv6 state was checked on the SD-root stage; see Local-only
+  behaviour).
+- **Video:** the SC1245 sensor is detected and the encoder produces H.264 at
+  1280×720, 25 fps, about 1600 kbit/s.
+- **Streaming:** authenticated RTSP on TCP 554, with ONVIF on port 80. RTP over
+  TCP and UDP both work.
+- **Clients:** ffprobe and Blue Iris both pull the main stream. ONVIF
+  `GetStreamUri` returns the working RTSP path.
+- **Management:** the OpenIPC web UI and SSH are available on the LAN.
+- **Recovery:** the stock SD rescue on p1/p2 was left in place, and saved U-Boot
+  entries boot the OpenIPC SD roots on p3/p4.
 
 ## The hardware
 
@@ -30,9 +54,10 @@ flash; the flash was read off-board as an **MX25L6433F**. The sensor reports ID
 `0x1245`, which points at an **SC1245**, and the stock root filesystem contains
 an `8188fu.ko` driver for a **Realtek RTL8188FU** USB Wi-Fi adapter.
 
-The sensor and Wi-Fi entries are evidence from the stock software and boot log,
-not proof that the replacement kernel has driven either device yet. The board
-also has UART pads marked TX1/RX1; the console runs at 115200 8N1.
+The sensor and Wi-Fi entries were evidence from the stock software and boot log
+before the replacement. Both are now driven by the OpenIPC kernel and confirmed
+in the live system. The board also has UART pads marked TX1/RX1; the console runs
+at 115200 8N1.
 
 ## What the stock firmware does
 
@@ -60,8 +85,8 @@ Static analysis of `mvrtsp`, `recorder` and `libmvs_core.so` found:
   presence is why patching the stock system looked less attractive than a clean
   replacement: removing one path would not establish a no-cloud system.
 
-No dynamic traffic capture was done. These are static findings and file
-observations, not a validated no-cloud image.
+No dynamic traffic capture was done on the stock system. These are static
+findings and file observations, not a validated no-cloud image.
 
 ## A clean replacement
 
@@ -104,35 +129,118 @@ mw.l 0x080000e0 0 1
 These values are recorded as evidence of the fix, not as a procedure to copy
 onto another board. They were then saved in U-Boot's environment, with the
 original ENV block backed up first, so the camera cold-boots the 4.4.302 kernel
-without manual commands. The stock SD rescue is still on p1/p2, byte-identical
-to its backups, and a customised OpenIPC root filesystem has been staged on a
-new p3. Later kernel variants add USB/Wi-Fi and camera nodes; the notes describe
-the USB-enabled variant as the one currently flashed, but the captured boot
-evidence stops at the earlier SD-root milestone.
+without manual commands. The stock SD rescue remained on p1/p2, byte-identical
+to its backups, and an OpenIPC root was staged on p3 and later p4.
 
-## Where this stopped
+## From SD root to flash
 
-The verified milestone is a boot, not a working camera. The camera cold-boots
-the OpenIPC 4.4.302 kernel from flash, enumerates the SD card and mounts the
-stock rescue root from SD p2. The stock p1/p2 rescue partitions are intact, and
-the OpenIPC root filesystem is ready on p3.
+The first OpenIPC root ran from SD p4 with a tmpfs overlay. Wi-Fi, the sensor,
+720p encoding and RTSP all worked there, but settings vanished on reboot and SD
+boot took four to five minutes. The final design moves the root to NOR:
 
-The OpenIPC userspace has not yet booted as the system. Wi-Fi association,
-sensor capture, video encoding, RTSP/ONVIF and a no-cloud traffic test are all
-still unverified on the replacement stack. There is no final flash layout,
-release image or whole-chip install, and `boot_normal` no longer reaches a
-working stock root because the trial kernel occupies the old A/B slots. Recovery
-is still a deliberate U-Boot and SD operation, not a consumer upgrade.
+- a squashfs root in `mtd2`
+- a small jffs2 `rootfs_data` partition in `mtd3` for persistent settings
+- the kernel in `mtd1`
+- the vendor bootloader, partition tables, stock kernel, MAC and ENV records
+  left in `mtd0`
 
-> **Stopping point.** The last confirmed result is the SD-root kernel boot. The
-> work stops before the OpenIPC root filesystem is booted and before any
-> end-to-end camera function is validated.
+The rootfs was written with `flashcp`, read back and hashed, and the stale vendor
+bytes in `rootfs_data` were erased and initialised as jffs2. The first flash-root
+boot mounted the squashfs correctly but then appeared to hang at `Starting
+mdev...`. That line was stale console scrollback from the previous boot. The real
+stall was `S31hostname` calling `fw_printenv`, which spun forever in userspace
+because `/etc/fw_env.config` was missing. Adding the config fixed it;
+`fw_printenv` now returns defaults with a harmless bad-CRC warning. Boot time
+dropped to about 17 seconds.
 
-## Next steps
+## Final flash layout
 
-The next step is to boot p3 as the OpenIPC root, then bring up local-only Wi-Fi
-and the SC1245/video path, followed by RTSP and optional ONVIF. The acceptance
-tests are already written down: an isolated LAN with no WAN, no unexpected
-outbound traffic, working RTSP over TCP and UDP, and a checked rollback. Only
-after those pass is it worth designing a persistent partition layout and a
-release image.
+```text
+mtd0  0x000000  0x1b9000  preserved    U-Boot, tables, stock KERNEL, MAC, ENV
+mtd1  0x1b9000  0x1ad000  kernel       OpenIPC uImage (video variant)
+mtd2  0x366000  0x459000  rootfs       OpenIPC squashfs
+mtd3  0x7bf000  0x041000  rootfs_data  jffs2 overlay (~260 KB)
+```
+
+The kernel command line is deliberately compact:
+
+```text
+mtdparts=spi0.0:0x1b9000(preserved),0x1ad000(kernel),0x459000(rootfs),0x41000(rootfs_data)
+```
+
+The rootfs image is exactly `0x459000` bytes, so the partition has no slack. The
+memory split is 40 MiB for Linux and 24 MiB reserved for video
+(`mem=40M memsize=64M rmem=24M`). The saved U-Boot environment boots this layout
+by default; `boot_p4` and `boot_p3` remain as SD recovery entries. The image with
+`fw_env.config` baked into the squashfs has been built but not reflashed: the
+live fix is already persistent in the jffs2 overlay, so the reflash is only
+robustness against a future overlay erase.
+
+## Streaming and validation
+
+The live stream is H.264 at 1280×720, 25 fps and about 1600 kbit/s. It is served
+on RTSP port 554 and requires authentication; RTSP uses the same account as the
+web UI and SSH. The main path is `/main`, with `/stream=0`, `/video0` and `/ch0`
+as aliases. RTP over TCP is the sensible default over Wi-Fi; UDP also works.
+
+ONVIF is on port 80 at `/onvif/device_service`, using HTTP Basic authentication.
+WSSE PasswordDigest also works once `onvif.password` is set, because majestic
+needs a cleartext copy of the password for digest (it is stored in the camera
+configuration with mode 0600). `GetStreamUri` returns the working `/stream=0`
+path.
+
+Blue Iris is the validation client. During validation it pulled the main stream
+as a single RTSP client and received tens of megabytes. Two client-side problems
+were found and fixed: an unset ONVIF password, and Blue Iris 5.4.3.1 never
+sending an RTSP `Authorization` header at all. Upgrading Blue Iris fixed the
+second; a camera-side capture showed the missing header. VLC on Arch needs the
+separate `vlc-plugin-live555` package; `ffplay` and `mpv` work without it.
+
+## Local-only behaviour
+
+The camera's own network configuration is LAN-only. The Wi-Fi setup brings up
+the link and DHCP but installs no IPv4 default route, and IPv6 is disabled. The
+running system is OpenIPC: the vendor cloud client, OTA redirect and DDNS helper
+from the stock firmware are not present in the boot path.
+
+That is a strong practical result, not a formal traffic audit. The acceptance
+plan called for an AP-side capture from power-on, across boot, idle, streaming
+and reconnect; that capture was not repeated after the final move to NOR. The
+no-default-route and IPv6-off configuration was verified on the SD-root system
+before the flash migration. The claim here is that the camera has no route and
+no vendor cloud software, not that every packet has been accounted for.
+
+## Limits and optional work
+
+- **Night mode is not working.** The IR-cut mapping is known (opening/night coil
+  GPIO 42, closing/day coil GPIO 41, IR illuminator GPIO 6), and the SoC pads
+  toggle correctly, but neither coil direction moved the filter or changed the
+  image, and the IR lamp did not light. The likely causes are the lens module's
+  IR-cut/IR connector, an unpopulated or damaged H-bridge, or a lens without a
+  switched filter. The stock pulse is only 10 ms; longer coil tests are not
+  appropriate.
+- **There is no real substream.** `video1` is disabled, so `/sub` is another
+  alias of the 720p main stream. Enabling a 640×360, 10 fps, ~400 kbit/s second
+  encoder is the obvious improvement for an NVR.
+- **ONVIF discovery is not reliable with Blue Iris.** The device service and
+  stream URI work when the camera is added manually; Blue Iris's WS-Security
+  discovery did not. The ONVIF profile also advertises 6 fps while the real
+  stream is 25 fps, so manual RTSP is more accurate.
+- **Audio and JPEG snapshots are disabled.** The camera sends no audio.
+- **The identity EEPROM is missing.** The desoldered chip was an FT24C02A, a
+  256-byte I2C identity EEPROM, not firmware. OpenIPC does not use it and the
+  camera runs without it. Reinstalling it is optional and mainly matters if the
+  board may return to stock or be sold.
+- **Recovery is deliberate, not consumer-grade.** `boot_normal` no longer reaches
+  a working stock root because the OpenIPC kernel occupies the old A/B slots.
+  Recovery means interrupting U-Boot and booting the saved SD p4 or p3 entry, or
+  the stock p1/p2 rescue. Keep the original whole-NOR dump and do not run
+  `fw_setenv` from userspace.
+- **Do not run respawning test listeners on the camera.** A one-off netcat relay
+  used to capture RTSP authentication worked; a `while true` respawn loop
+  saturated userspace and required a power cycle. Use a single-shot listener, a
+  host-side proxy, and keep test scripts in `/tmp`.
+- **This is not a release image.** There is no reproducible build manifest, no
+  whole-chip install, no formal review of OpenIPC's optional integrations, and
+  no formal overnight, multi-client, AP-restart or thermal test. The
+  `fw_env.config`-baked squashfs is built but not reflashed.
