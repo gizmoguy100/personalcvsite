@@ -3,8 +3,9 @@
 A personal CV and project notebook for Alex Ferriroli, styled after the Windows XP
 "Luna" Olive Green theme. Built with Hugo, with a theme written from scratch in `layouts/` and `assets/`.
 
-There is no JavaScript, no web font, and no framework. Pages are ordinary documents
-inside a single XP window frame.
+The site is mostly static: no web font and no framework. A small script powers the
+project photo lightbox, and pages are ordinary documents inside a single XP window
+frame.
 
 ## Requirements
 
@@ -31,7 +32,8 @@ hugo --gc --minify
 content/            Home, CV, About, Projects
 layouts/            baseof, home, page, cv, projects, project, 404 + partials
 assets/css/         tokens.css → chrome.css → pages.css (concatenated)
-assets/img/         headshot.jpg (source for Hugo image processing)
+assets/img/         headshot.jpg and project photos (sources for Hugo image processing)
+assets/js/          lightbox.js (project photo viewer)
 static/             favicon.svg, og.png, robots.txt
 scripts/make-og.py  regenerates static/og.png
 .github/workflows/  GitHub Pages deployment
@@ -54,6 +56,10 @@ scripts/make-og.py  regenerates static/og.png
   Write the body as normal Markdown.
   Order entries with `weight` (lowest first). The list and detail layouts are
   `layouts/projects.html` and `layouts/project.html`.
+- **Project photos** — put source images in `assets/img/projects/<slug>/` and use
+  the `gallery` and `photo` shortcodes in the project body. The `photo` shortcode
+  emits responsive WebP variants. Strip location metadata from the sources before
+  committing; the shortcode does not do that for you.
 - **Code in write-ups** — fenced code blocks are not syntax-highlighted; they
   render as scrollable `<pre>` panels styled in `assets/css/chrome.css`.
 - **Shared details** — name, role, email, location and GitHub live in `hugo.yaml`
@@ -65,6 +71,17 @@ scripts/make-og.py  regenerates static/og.png
 Old inbound links are preserved: `/cv/` and `/about/` keep their trailing slashes,
 and `/en/` and `/de/` redirect to `/` via Hugo aliases on the home page.
 
+## Markdown for AI
+
+The build also emits machine-readable versions of the site:
+
+- `/llms.txt` — a Markdown index of the main pages.
+- `/llms-full.txt` — the full text of the site in one file.
+- `/<page>/index.md` — a Markdown twin of each HTML page, advertised with
+  `<link rel="alternate" type="text/markdown">`.
+
+These are generated from the same content and templates, so they stay in sync.
+
 ## Design notes
 
 - Palette and bevels are defined once in `assets/css/tokens.css`.
@@ -72,8 +89,8 @@ and `/en/` and `/de/` redirect to `/` via Hugo aliases on the home page.
 - Title bar text and all body copy are checked at 4.5:1 contrast or better.
 - All icons are hand-authored SVG in `layouts/_partials/icon.html`. No Microsoft
   bitmaps, wallpapers or logos are used; this is an homage, not a clone.
-- The site works without JavaScript, and the CV has a dedicated print stylesheet
-  (`Ctrl/Cmd + P` produces a clean paper CV).
+- The site works without JavaScript; the photo lightbox is progressive enhancement.
+  The CV has a dedicated print stylesheet (`Ctrl/Cmd + P` produces a clean paper CV).
 
 ## Deployment (GitHub Pages)
 

@@ -1,0 +1,11 @@
+{{- $links := slice -}}
+{{- range .Pages.ByWeight -}}
+  {{- $link := .RelPermalink -}}
+  {{- with .OutputFormats.Get "md" }}{{ $link = .Permalink }}{{ end -}}
+  {{- $links = $links | append (printf "- [%s](%s): %s" .Title $link .Description) -}}
+{{- end -}}
+{{- if $links -}}
+## Pages
+
+{{ delimit $links "\n" | safeHTML }}
+{{- end -}}

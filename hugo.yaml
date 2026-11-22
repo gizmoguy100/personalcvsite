@@ -5,6 +5,41 @@ enableRobotsTXT: true
 disableKinds: ["taxonomy", "term", "rss"]
 enableGitInfo: false
 
+mediaTypes:
+  text/markdown:
+    suffixes:
+      - md
+
+outputFormats:
+  md:
+    mediaType: text/markdown
+    baseName: index
+    isPlainText: true
+    notAlternative: false
+  llms:
+    mediaType: text/plain
+    baseName: llms
+    isPlainText: true
+    notAlternative: true
+  llmsfull:
+    mediaType: text/plain
+    baseName: llms-full
+    isPlainText: true
+    notAlternative: true
+
+outputs:
+  home:
+    - html
+    - md
+    - llms
+    - llmsfull
+  section:
+    - html
+    - md
+  page:
+    - html
+    - md
+
 params:
   author: "Alex Ferriroli"
   role: "Software & Systems Engineer"

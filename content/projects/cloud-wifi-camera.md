@@ -57,6 +57,13 @@ the replacement. Both are now driven by the OpenIPC kernel and confirmed
 in the live system. The board also has UART pads marked TX1/RX1; the console runs
 at 115200 8N1.
 
+{{< gallery >}}
+{{< photo src="img/projects/cloud-wifi-camera/board-front.jpg" alt="The camera board with the lens, IR-cut filter assembly and Wi-Fi module fitted." caption="Lens, IR-cut filter assembly and the RTL8188FU Wi-Fi module." >}}
+{{< photo src="img/projects/cloud-wifi-camera/board-front-top.jpg" alt="Top view of the board showing the IR-cut filter assembly and its wiring." caption="The IR-cut filter assembly and its wiring." >}}
+{{< photo src="img/projects/cloud-wifi-camera/board-back.jpg" alt="Back of the camera board showing the microSD slot, micro-USB port, reset button and board marking." caption="MicroSD slot, micro-USB power, reset button and board marking." >}}
+{{< photo src="img/projects/cloud-wifi-camera/board-in-hand.jpg" alt="The camera board held in one hand, showing its size." caption="The board held for scale." >}}
+{{< /gallery >}}
+
 ## What the stock firmware does
 
 Stock is Linux 3.4.35 on an Anyka board with a SquashFS root, a JFFS2

@@ -1,0 +1,20 @@
+{{- $src := .Get "src" -}}
+{{- $res := resources.Get $src -}}
+{{- if not $res -}}
+  {{- errorf "photo shortcode: resource %q not found" $src -}}
+{{- end -}}
+{{- $small := $res.Resize "400x webp q80" -}}
+{{- $medium := $res.Resize "800x webp q82" -}}
+{{- $large := $res.Resize "1600x webp q84" -}}
+<figure class="project-photo">
+  <a href="{{ $large.RelPermalink }}">
+    <img src="{{ $medium.RelPermalink }}"
+      srcset="{{ $small.RelPermalink }} 400w, {{ $medium.RelPermalink }} 800w, {{ $large.RelPermalink }} 1600w"
+      sizes="(max-width: 560px) 90vw, 300px"
+      width="{{ $medium.Width }}" height="{{ $medium.Height }}"
+      alt="{{ .Get "alt" }}" loading="lazy" decoding="async">
+  </a>
+  {{- with .Get "caption" }}
+  <figcaption>{{ . }}</figcaption>
+  {{- end }}
+</figure>

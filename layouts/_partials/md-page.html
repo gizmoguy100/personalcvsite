@@ -1,0 +1,52 @@
+{{- $blocks := slice -}}
+{{- $blocks = $blocks | append (printf "# %s" .Title) -}}
+{{- with .Description }}{{ $blocks = $blocks | append (printf "> %s" .) }}{{ end -}}
+{{- $body := partial "md-body.html" . -}}
+
+{{- if .IsHome -}}
+  {{- with $body }}{{ $blocks = $blocks | append . }}{{ end -}}
+  {{- $contact := slice
+    (printf "- Email: [%s](mailto:%s)" site.Params.email site.Params.email)
+    (printf "- GitHub: [%s](%s)" site.Params.githubUser site.Params.github)
+    (printf "- Location: %s" site.Params.location)
+  -}}
+  {{- $blocks = $blocks | append (printf "## Contact\n\n%s" (delimit $contact "\n")) -}}
+  {{- $pages := slice -}}
+  {{- range sort .Site.Pages "Path" -}}
+    {{- if and (in (slice "section" "page") .Kind) -}}
+      {{- $link := .RelPermalink -}}
+      {{- with .OutputFormats.Get "md" }}{{ $link = .Permalink }}{{ end -}}
+      {{- $pages = $pages | append (printf "- [%s](%s): %s" .Title $link .Description) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $pages }}{{ $blocks = $blocks | append (printf "## Pages\n\n%s" (delimit . "\n")) }}{{ end -}}
+{{- else if eq .Layout "cv" -}}
+  {{- $blocks = $blocks | append (partial "md-cv.html" .) -}}
+{{- else if eq .Layout "page" -}}
+  {{- with $body }}{{ $blocks = $blocks | append . }}{{ end -}}
+  {{- $props := slice
+    (printf "- Name: %s" site.Params.author)
+    (printf "- Role: %s" site.Params.role)
+    (printf "- Email: [%s](mailto:%s)" site.Params.email site.Params.email)
+    (printf "- Location: %s" site.Params.location)
+    (printf "- GitHub: [%s](%s)" site.Params.githubUser site.Params.github)
+  -}}
+  {{- $interests := slice -}}
+  {{- range site.Params.interests }}{{ $interests = $interests | append .name }}{{ end -}}
+  {{- $props = $props | append (printf "- Interests: %s" (delimit $interests ", ")) -}}
+  {{- $blocks = $blocks | append (printf "## System properties\n\n%s" (delimit $props "\n")) -}}
+{{- else if eq .Kind "section" -}}
+  {{- with $body }}{{ $blocks = $blocks | append . }}{{ end -}}
+  {{- $links := partial "md-child-links.html" . -}}
+  {{- with $links }}{{ $blocks = $blocks | append . }}{{ end -}}
+{{- else if eq .Layout "project" -}}
+  {{- $props := partial "md-project-props.html" . -}}
+  {{- with $props }}{{ $blocks = $blocks | append . }}{{ end -}}
+  {{- with $body }}{{ $blocks = $blocks | append . }}{{ end -}}
+{{- else -}}
+  {{- with $body }}{{ $blocks = $blocks | append . }}{{ end -}}
+{{- end -}}
+
+{{- $out := delimit $blocks "\n\n" -}}
+{{- $out = replaceRE `\n{3,}` "\n\n" $out -}}
+{{- $out | safeHTML -}}

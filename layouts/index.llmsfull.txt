@@ -1,0 +1,20 @@
+{{- $pages := slice -}}
+{{- range sort .Site.Pages "Path" -}}
+  {{- if and (in (slice "section" "page") .Kind) -}}
+    {{- $pages = $pages | append . -}}
+  {{- end -}}
+{{- end -}}
+# {{ site.Title }}
+
+> {{ site.Params.description }}
+
+{{ site.Params.role }} · {{ site.Params.location }}
+Email: [{{ site.Params.email }}](mailto:{{ site.Params.email }})
+GitHub: [{{ site.Params.githubUser }}]({{ site.Params.github }})
+
+{{ partial "md-body.html" . }}
+{{ range $pages }}
+---
+
+{{ partial "md-page.html" . }}
+{{ end }}

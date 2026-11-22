@@ -1,0 +1,4 @@
+{{- $body := .RawContent -}}
+{{- $body = replaceRE `(?m)^\{\{[<%].*?[>%]\}\}[ \t]*\n?` "" $body -}}
+{{- $body = replaceRE `\n{3,}` "\n\n" $body -}}
+{{- $body | strings.TrimSpace | safeHTML -}}

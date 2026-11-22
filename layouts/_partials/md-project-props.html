@@ -1,0 +1,19 @@
+{{- $page := . -}}
+{{- $props := slice -}}
+{{- with $page.Params.status }}{{ $props = $props | append (printf "- Status: %s" .) }}{{ end -}}
+{{- with $page.Params.stage }}{{ $props = $props | append (printf "- Stage: %s" .) }}{{ end -}}
+{{- with $page.Params.hardware -}}
+  {{- $value := . -}}
+  {{- with $page.Params.hardware_detail }}{{ $value = printf "%s — %s" $value . }}{{ end -}}
+  {{- $props = $props | append (printf "- Hardware: %s" $value) -}}
+{{- end -}}
+{{- with $page.Params.firmware }}{{ $props = $props | append (printf "- Firmware: %s" .) }}{{ end -}}
+{{- with $page.Params.network }}{{ $props = $props | append (printf "- Network: %s" .) }}{{ end -}}
+{{- with $page.Params.streaming }}{{ $props = $props | append (printf "- Streaming: %s" .) }}{{ end -}}
+{{- with $page.Params.storage }}{{ $props = $props | append (printf "- Storage: %s" .) }}{{ end -}}
+{{- with $page.Params.recovery }}{{ $props = $props | append (printf "- Recovery: %s" .) }}{{ end -}}
+{{- if $props -}}
+## Project properties
+
+{{ delimit $props "\n" | safeHTML }}
+{{- end -}}

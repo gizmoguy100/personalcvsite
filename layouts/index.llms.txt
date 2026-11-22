@@ -1,0 +1,26 @@
+{{- $pages := slice -}}
+{{- range sort .Site.Pages "Path" -}}
+  {{- if and (in (slice "section" "page") .Kind) -}}
+    {{- $link := .RelPermalink -}}
+    {{- with .OutputFormats.Get "md" }}{{ $link = .Permalink }}{{ end -}}
+    {{- $pages = $pages | append (printf "- [%s](%s): %s" .Title $link .Description) -}}
+  {{- end -}}
+{{- end -}}
+{{- $homeLink := .Permalink -}}
+{{- with .OutputFormats.Get "md" }}{{ $homeLink = .Permalink }}{{ end -}}
+# {{ site.Title }}
+
+> {{ site.Params.description }}
+
+{{ site.Params.role }} · {{ site.Params.location }}
+Email: [{{ site.Params.email }}](mailto:{{ site.Params.email }})
+GitHub: [{{ site.Params.githubUser }}]({{ site.Params.github }})
+
+## Pages
+
+- [Home]({{ $homeLink }}): {{ site.Params.description }}
+{{ delimit $pages "\n" }}
+
+## Full text
+
+- [llms-full.txt]({{ "llms-full.txt" | absURL }})

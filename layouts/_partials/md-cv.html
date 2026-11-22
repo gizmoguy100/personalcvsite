@@ -1,0 +1,34 @@
+{{- $sections := slice
+  (dict "title" "Experience" "items" .Params.experience)
+  (dict "title" "Education" "items" .Params.education)
+  (dict "title" "Volunteering" "items" .Params.volunteering)
+-}}
+{{- $out := slice -}}
+{{- range $sections -}}
+  {{- $items := slice -}}
+  {{- range .items -}}
+    {{- $block := slice (printf "### %s" .role) -}}
+    {{- $meta := slice -}}
+    {{- with .org }}{{ $meta = $meta | append (printf "**%s**" .) }}{{ end -}}
+    {{- with .period }}{{ $meta = $meta | append . }}{{ end -}}
+    {{- with .location }}{{ $meta = $meta | append . }}{{ end -}}
+    {{- with $meta }}{{ $block = $block | append (delimit . " · ") }}{{ end -}}
+    {{- with .summary }}{{ $block = $block | append . }}{{ end -}}
+    {{- with .blurb }}{{ $block = $block | append . }}{{ end -}}
+    {{- with .highlights -}}
+      {{- $list := slice -}}
+      {{- range . }}{{ $list = $list | append (printf "- %s" .) }}{{ end -}}
+      {{- $block = $block | append (delimit $list "\n") -}}
+    {{- end -}}
+    {{- $items = $items | append (delimit $block "\n\n") -}}
+  {{- end -}}
+  {{- $section := printf "## %s" .title -}}
+  {{- with $items }}{{ $section = printf "%s\n\n%s" $section (delimit . "\n\n") }}{{ end -}}
+  {{- $out = $out | append $section -}}
+{{- end -}}
+{{- $interests := slice -}}
+{{- range site.Params.interests -}}
+  {{- $interests = $interests | append (printf "- **%s** — %s" .name .description) -}}
+{{- end -}}
+{{- $out = $out | append (printf "## Interests\n\n%s" (delimit $interests "\n")) -}}
+{{- delimit $out "\n\n" | safeHTML -}}

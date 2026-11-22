@@ -13,6 +13,12 @@
   <meta name="description" content="{{ $description }}">
   <meta name="author" content="{{ site.Params.author }}">
   <link rel="canonical" href="{{ .Permalink }}">
+  {{- with .OutputFormats.Get "md" }}
+  <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" title="Markdown">
+  {{- end }}
+  {{- if .IsHome }}
+  <link rel="alternate" type="text/plain" href="{{ "llms.txt" | absURL }}" title="llms.txt">
+  {{- end }}
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.Title }}">

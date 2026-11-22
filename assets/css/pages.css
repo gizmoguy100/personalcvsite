@@ -321,3 +321,125 @@
     border: 0;
   }
 }
+
+/* ---------- Project photo gallery ---------- */
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.project-gallery figure {
+  margin: 0;
+  padding: 6px 6px 4px;
+  background: #fff;
+  border: 1px solid #8a8573;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.18);
+}
+
+.project-gallery a {
+  display: block;
+}
+
+.project-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #d8d4c4;
+}
+
+.project-gallery figcaption {
+  padding-top: 4px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .project-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Project photo lightbox ---------- */
+.project-gallery a {
+  cursor: zoom-in;
+}
+
+.project-gallery a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+.lightbox {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+
+.lightbox::backdrop {
+  background: rgba(24, 22, 16, 0.82);
+}
+
+.lightbox-inner {
+  position: relative;
+  margin: 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #8a8573;
+  box-shadow: 4px 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.lightbox-img {
+  display: block;
+  max-width: min(88vw, 1600px);
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  border: 1px solid #d8d4c4;
+}
+
+.lightbox-caption {
+  margin: 6px 0 0;
+  max-width: min(88vw, 1600px);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: center;
+}
+
+.lightbox-caption[hidden] {
+  display: none;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font: 18px/1 "Segoe UI", Tahoma, sans-serif;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid #8a8573;
+  border-radius: 50%;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.lightbox-close:hover,
+.lightbox-close:focus-visible {
+  background: #f4f2e6;
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
